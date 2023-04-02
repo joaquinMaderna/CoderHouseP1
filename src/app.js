@@ -1,11 +1,90 @@
 import express from "express";
-//import ProductManager from "./productManager.js";
+import handlebars from "express-handlebars";
+
+import productRoutes from "./routes/productsRoutes.js";
+import viewsRouter from "./routes/views.router.js"
+import ProductManager from "./productManager.js";
+import { Server } from "socket.io";
+
+import __dirname from "./utils/utils.js"
+import { join } from 'path';
+
+
+const productManager = new ProductManager()
 
 const app = express()
 
 const port = 8080
 
-const user = {
+
+app.use(express.json())
+
+app.use(express.urlencoded({extended : true}))
+
+app.use("/static", express.static(join(__dirname, '..', '/public')))
+
+//handlebars config------------------
+//const handlebars = handlebars
+
+//Decirle a express que utilizamos un motor de plantillas
+app.engine('handlebars', handlebars.engine());
+
+//Indicamos la direccion donde tiene que buscar todas las plantillas
+app.set('views', join(__dirname, '..', '/views'));
+
+//Le decimos al motor cual vamos a utilizar, handlebars o .hbs
+app.set('view engine', 'handlebars');
+//-----------------------------------
+
+
+app.use("/views", viewsRouter, (req,res) => {
+    res.send(
+        console.log("views")
+    )
+})
+
+app.listen(port, ()=>{
+    console.log("servidor funcionando");
+})
+
+
+app.use("/api/products", productRoutes, async (req,res) =>{
+    const products = await productManager.getProducts()
+    res.json(   
+        products
+    )
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+const app = express()
+
+const port = 8080
+
+const product = {
     name: "juan",
     age: 18
 }
@@ -16,12 +95,12 @@ app.listen(port, ()=>{
 
 app.get("/api/products/", (peticion,respuesta)=>{
     //en esta ruta tengo que listar todos los productos del path
-    respuesta.send(user)
+    respuesta.send(product)
 })
 
 app.get("/api/products/:pid", (peticion,respuesta)=>{
     //en esta ruta tengo que traer sólo el producto con el id proporcionado
-    respuesta.send(user)
+    respuesta.send(product)
 })
 
 app.post("/", ()=>{
@@ -56,5 +135,4 @@ app.post("/api/carts/:cid/product/:pid ", ()=>{
 app.get("/api/carts/:cid", (peticion,respuesta)=>{
     //en esta ruta tengo que traer sólo el producto con el id proporcionado
 })
-
-
+*/

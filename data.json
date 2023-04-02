@@ -30,5 +30,13 @@
     "thumbnail": "img",
     "stock": "2",
     "id": 4
+  },
+  {
+    "title": "pantalon",
+    "descripcion": "descripcion",
+    "price": "100",
+    "thumbnail": "img",
+    "stock": "2",
+    "id": 5
   }
 ]
